@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+// Retrolamda
+// [Apache 2.0] https://github.com/evant/gradle-retrolambda, Copyright 2013 Evan Tatarka
+apply plugin: 'me.tatarka.retrolambda'
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
@@ -32,6 +36,11 @@ android {
 
     dexOptions {
         javaMaxHeapSize "4g"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 

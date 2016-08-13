@@ -32,4 +32,12 @@
         <item name="spinBars">true</item>
         <item name="color">@android:color/white</item>
     </style>
+
+    <style name="NavigationViewStyle">
+        <item name="android:textSize">20sp</item> <!-- menu item text size-->
+        <item name="android:textAlignment">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/grey_700</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
 </resources>

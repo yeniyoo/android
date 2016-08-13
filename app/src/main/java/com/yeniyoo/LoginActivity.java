@@ -17,7 +17,6 @@ import com.yeniyoo.Core.AppController;
 import com.yeniyoo.Core.network.DefaultListener;
 import com.yeniyoo.tools.RippleView;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -36,60 +35,65 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     int adminCount = 0;
 
-
     private void registerByFacebook(LoginResult loginResult) {
         final String accessToken = loginResult.getAccessToken().getToken();
         final String id = loginResult.getAccessToken().getUserId();
-        Bundle params = new Bundle();
-        params.putString("fields", "id,first_name,gender,picture");
-        GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+
+        AppController.getInstance().getRestService().getUserService().register(accessToken).enqueue(new Callback<Boolean>() {
             @Override
-            public void onCompleted(JSONObject object, GraphResponse response) {
-                String name = object.optString("first_name");
-                String gender = object.optString("gender");
-                String picture = "";
-                try {
-                    picture = object.getJSONObject("picture").getJSONObject("data").optString("url");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                AppController.getInstance().getRestService().getUserService().register(id, accessToken, name, picture, gender).enqueue(new Callback<Boolean>() {
-                    @Override
-                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                        if(response.isSuccess()) {
-                            AppController.getInstance().getLoginManager().performFacebookLogin(id, new DefaultListener() {
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccess()) {
+                    AppController.getInstance().getLoginManager().performFacebookLogin(id, new DefaultListener() {
+                        @Override
+                        public void onSuccess() {
+                            AppController.getInstance().getLoginManager().loadUser(new DefaultListener() {
                                 @Override
                                 public void onSuccess() {
-                                    AppController.getInstance().getLoginManager().loadUser(new DefaultListener() {
-                                        @Override
-                                        public void onSuccess() {
 
-                                        }
-
-                                        @Override
-                                        public void onFailure() {
-
-                                        }
-                                    });
                                 }
 
                                 @Override
                                 public void onFailure() {
-                                    Log.d("asd", "asd");
+
                                 }
                             });
-                        }else{
-                            Log.d("asd","asd");
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<Boolean> call, Throwable t) {
-                        Log.d("asd","asd");
-                    }
-                });
+                        @Override
+                        public void onFailure() {
+                            Log.d("asd", "asd");
+                        }
+                    });
+                } else {
+                    Log.d("asd", "asd");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.d("asd", "asd");
             }
         });
+
+        Bundle params = new Bundle();
+        params.putString("fields", "age");
+        GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        Integer age = object.optInt("age");
+                        AppController.getInstance().getRestService().getUserService().postAge(age).enqueue(new Callback<DefaultListener>() {
+                            @Override
+                            public void onResponse(Call<DefaultListener> call, Response<DefaultListener> response) {
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<DefaultListener> call, Throwable t) {
+
+                            }
+                        });
+                    }
+                });
         request.setParameters(params);
         request.executeAsync();
     }
@@ -126,15 +130,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         @Override
         public void onCancel() {
-            Log.d("asd","Asdsa");
+            Log.d("asd", "Asdsa");
         }
 
         @Override
         public void onError(FacebookException e) {
-            Log.d("asd","Asdsa");
+            Log.d("asd", "Asdsa");
         }
     };
-
 
 
     @Override

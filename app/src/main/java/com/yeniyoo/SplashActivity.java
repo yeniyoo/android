@@ -27,8 +27,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         activity = this;
         setContentView(R.layout.activity_flash);
-
-
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
                     "com.gelato.gelato",
@@ -69,6 +67,7 @@ public class SplashActivity extends AppCompatActivity {
         startActivity(intent);
         activity.finish();
     }
+
     private void moveToMainActivity() {
         Intent intent = new Intent(SplashActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

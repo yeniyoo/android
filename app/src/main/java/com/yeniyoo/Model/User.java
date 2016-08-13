@@ -9,24 +9,14 @@ import java.io.Serializable;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User implements Serializable {
-    // TODO: implement parent_profile
 
-    public String userName;
-    public String userProfileUrl;
+    public Integer age;
 
-    public String getUserName() {
-        return userName;
+    public Integer getAge() {
+        return age;
     }
 
-    public String getUserProfileUrl() {
-        return userProfileUrl;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setUserProfileUrl(String userProfileUrl) {
-        this.userProfileUrl = userProfileUrl;
+    public void setAge(Integer age) {
+        this.age = age;
     }
 }

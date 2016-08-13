@@ -2,30 +2,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/channels"
-        android:icon="@drawable/ic_channel"
-        android:title="진행중인 채널">
-        <menu>
+        android:id="@+id/profile"
+        android:title="내 프로필">
 
-        </menu>
     </item>
 
     <item
-        android:id="@+id/expired_channels"
-        android:icon="@drawable/ic_channel"
-        android:title="만료된 채널">
-        <menu>
+        android:id="@+id/open"
+        android:title="라운드 열기">
 
-        </menu>
     </item>
 
-    <item android:title="기타">
-        <menu>
-            <item
-                android:id="@+id/nav_setting"
-                android:icon="@drawable/ic_alarm_copy"
-                android:title="알림설정" />
-        </menu>
+    <item
+        android:id="@+id/list"
+        android:title="라운드 관리">
+
+    </item>
+
+    <item
+        android:id="@+id/shop"
+        android:title="상점">
     </item>
 
 </menu>

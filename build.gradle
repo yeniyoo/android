@@ -8,14 +8,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.5.0'
-
-        //Retrolambda
-        //[Apache 2.0] https://github.com/evant/gradle-retrolambda, Copyright 2013 Evan Tatarka
-        //It must be place here
-        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
     }
 }
 

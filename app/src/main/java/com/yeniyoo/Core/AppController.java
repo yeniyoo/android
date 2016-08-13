@@ -1,7 +1,7 @@
 package com.yeniyoo.Core;
 
-import android.app.Application;
 import android.content.pm.PackageManager;
+import android.support.multidex.MultiDexApplication;
 
 import com.facebook.FacebookSdk;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -24,7 +24,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 /**
  * Created by YJLaptop on 2016-07-16.
  */
-public class AppController extends Application {
+public class AppController extends MultiDexApplication {
 
     public static final String TAG = AppController.class.getSimpleName();
     private LocalStore mLocalStore;
@@ -67,7 +67,6 @@ public class AppController extends Application {
             return 0;
         }
     }
-
 
     public Retrofit getRetrofit() {
         if (mRetrofit == null) {

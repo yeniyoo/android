@@ -99,7 +99,7 @@ public class LocalStore {
     }
 
     public String getBaseUrl(){
-        return sharedPref.getString("base_url","https://qanda.co.kr");
+        return sharedPref.getString("base_url","http://f8d9cee0.ngrok.io/api");
     }
 
     public void clearLoginData(){

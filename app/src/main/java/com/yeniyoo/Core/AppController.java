@@ -23,6 +23,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import static org.apache.james.mime4j.codec.DecoderUtil.decodeEncodedWords;
@@ -71,7 +72,7 @@ public class AppController extends Application {
         public Response intercept(Chain chain) throws IOException {
             Request original = chain.request();
             Response response = chain.proceed(original);
-            
+
             if (response.headers().get("alert") != null) {
                 String error = decodeEncodedWords(response.headers().get("alert"), DecodeMonitor.SILENT);
                 Intent intent = new Intent("com.yeniyoo.core.toastreciever");
@@ -103,9 +104,11 @@ public class AppController extends Application {
             objectMapper.setPropertyNamingStrategy(
                     PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
             JacksonConverterFactory jacksonConverterFactory = JacksonConverterFactory.create(objectMapper);
+            RxJavaCallAdapterFactory rxJavaCallAdapterFactory = RxJavaCallAdapterFactory.create();
             mRetrofit = new Retrofit.Builder()
                     .baseUrl(AppController.getInstance().getLocalStore().getBaseUrl())
                     .client(okClient)
+                    .addCallAdapterFactory(rxJavaCallAdapterFactory)
                     .addConverterFactory(jacksonConverterFactory)
                     .build();
         }

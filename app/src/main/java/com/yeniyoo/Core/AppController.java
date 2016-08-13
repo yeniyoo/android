@@ -1,17 +1,13 @@
 package com.yeniyoo.Core;
 
 import android.app.Application;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.util.Log;
 
 import com.facebook.FacebookSdk;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-
-import org.apache.james.mime4j.codec.DecodeMonitor;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,10 +19,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
-
-import static org.apache.james.mime4j.codec.DecoderUtil.decodeEncodedWords;
 
 /**
  * Created by YJLaptop on 2016-07-16.
@@ -38,6 +31,14 @@ public class AppController extends Application {
     private RestService mRestService;
     public Boolean DEBUG;
     private Retrofit mRetrofit;
+    private  LoginManager mLoginManager;
+
+    public LoginManager getLoginManager() {
+        if(mLoginManager == null){
+            mLoginManager = new LoginManager();
+        }
+        return mLoginManager;
+    }
 
     // Instance
     private static AppController mInstance;
@@ -67,23 +68,6 @@ public class AppController extends Application {
         }
     }
 
-    private final Interceptor TOAST_INTERCEPTOR = new Interceptor() {
-        @Override
-        public Response intercept(Chain chain) throws IOException {
-            Request original = chain.request();
-            Response response = chain.proceed(original);
-
-            if (response.headers().get("alert") != null) {
-                String error = decodeEncodedWords(response.headers().get("alert"), DecodeMonitor.SILENT);
-                Intent intent = new Intent("com.yeniyoo.core.toastreciever");
-                intent.putExtra("msg", error);
-                sendBroadcast(intent);
-                Log.d("interceptor_error_log", error);
-            }
-            return response;
-        }
-    };
-
 
     public Retrofit getRetrofit() {
         if (mRetrofit == null) {
@@ -94,7 +78,6 @@ public class AppController extends Application {
             okClient = new OkHttpClient.Builder()
                     .cache(cache)
                     .addInterceptor(AUTHENTICATION_INTERCEPTOR)
-                    .addInterceptor(TOAST_INTERCEPTOR)
                     .connectTimeout(10, TimeUnit.SECONDS)
                     .readTimeout(30, TimeUnit.SECONDS)
                     .writeTimeout(30, TimeUnit.SECONDS)
@@ -104,11 +87,9 @@ public class AppController extends Application {
             objectMapper.setPropertyNamingStrategy(
                     PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
             JacksonConverterFactory jacksonConverterFactory = JacksonConverterFactory.create(objectMapper);
-            RxJavaCallAdapterFactory rxJavaCallAdapterFactory = RxJavaCallAdapterFactory.create();
             mRetrofit = new Retrofit.Builder()
                     .baseUrl(AppController.getInstance().getLocalStore().getBaseUrl())
                     .client(okClient)
-                    .addCallAdapterFactory(rxJavaCallAdapterFactory)
                     .addConverterFactory(jacksonConverterFactory)
                     .build();
         }
@@ -127,7 +108,7 @@ public class AppController extends Application {
         super.onCreate();
         mInstance = this;
         Fresco.initialize(this);
-        FacebookSdk.sdkInitialize(getApplicationContext());
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
     }
 
     public static synchronized AppController getInstance() {

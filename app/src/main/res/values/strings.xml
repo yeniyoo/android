@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">Round_Android</string>
+    <string name="app_name">Round</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="facebook_app_id">472579026278582</string>
+
+
 </resources>

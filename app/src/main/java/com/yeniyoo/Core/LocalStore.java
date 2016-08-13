@@ -3,8 +3,12 @@ package com.yeniyoo.Core;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.yeniyoo.Model.User;
+
+import java.io.IOException;
 
 /**
  * Created by YJLaptop on 2016-07-16.
@@ -32,6 +36,18 @@ public class LocalStore {
     /*
      * Generic LocalStore methods
      */
+
+    public void storeUser(User user) {
+        SharedPreferences.Editor spEditor = sharedPref.edit();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            spEditor.putString("user", mapper.writeValueAsString(user));
+            spEditor.commit();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public int getIntValue(String key, int defaultValue) {
         return sharedPref.getInt(key, defaultValue);
@@ -91,6 +107,28 @@ public class LocalStore {
         spEditor.remove("login_token");
         spEditor.remove("user");
         spEditor.commit();
+    }
+
+    public void storeLoginToken(String loginToken) {
+        SharedPreferences.Editor spEditor = sharedPref.edit();
+        spEditor.putString("login_token", loginToken);
+        spEditor.commit();
+    }
+
+    public User getUser() {
+        ObjectMapper mapper = new ObjectMapper();
+
+        User user = null;
+        String json = sharedPref.getString("user", null);
+        if (json != null && !json.isEmpty()) {
+            try {
+                mapper.registerModule(new JodaModule());
+                user = mapper.readValue(json, User.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return user;
     }
 
 

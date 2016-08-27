@@ -9,15 +9,11 @@ import android.view.View;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.yeniyoo.Core.AppController;
-import com.yeniyoo.Core.network.DefaultListener;
+import com.yeniyoo.Core.network.DefaultResponse;
 import com.yeniyoo.tools.RippleView;
-
-import org.json.JSONObject;
 
 import java.util.Arrays;
 
@@ -33,99 +29,33 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     RippleView btnFacebook;
     LoginButton loginButton;
 
-    int adminCount = 0;
-
-    private void registerByFacebook(LoginResult loginResult) {
-        final String accessToken = loginResult.getAccessToken().getToken();
-        final String id = loginResult.getAccessToken().getUserId();
-
-        AppController.getInstance().getRestService().getUserService().register(accessToken).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccess()) {
-                    AppController.getInstance().getLoginManager().performFacebookLogin(id, new DefaultListener() {
-                        @Override
-                        public void onSuccess() {
-                            AppController.getInstance().getLoginManager().loadUser(new DefaultListener() {
-                                @Override
-                                public void onSuccess() {
-
-                                }
-
-                                @Override
-                                public void onFailure() {
-
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onFailure() {
-                            Log.d("asd", "asd");
-                        }
-                    });
-                } else {
-                    Log.d("asd", "asd");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                Log.d("asd", "asd");
-            }
-        });
-
-        Bundle params = new Bundle();
-        params.putString("fields", "age");
-        GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        Integer age = object.optInt("age");
-                        AppController.getInstance().getRestService().getUserService().postAge(age).enqueue(new Callback<DefaultListener>() {
-                            @Override
-                            public void onResponse(Call<DefaultListener> call, Response<DefaultListener> response) {
-
-                            }
-
-                            @Override
-                            public void onFailure(Call<DefaultListener> call, Throwable t) {
-
-                            }
-                        });
-                    }
-                });
-        request.setParameters(params);
-        request.executeAsync();
+    private void moveToMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private FacebookCallback<LoginResult> mCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(final LoginResult loginResult) {
-            final String id = loginResult.getAccessToken().getUserId();
-            AppController.getInstance().getLoginManager().performFacebookLogin(
-                    id,
-                    new DefaultListener() {
-                        @Override
-                        public void onSuccess() {
-                            AppController.getInstance().getLoginManager().loadUser(new DefaultListener() {
-                                @Override
-                                public void onSuccess() {
+            final String accessToken = loginResult.getAccessToken().getToken();
 
-                                }
+            AppController.getInstance().getRestService().getUserService().register(accessToken).enqueue(new Callback<DefaultResponse>() {
+                @Override
+                public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+                    if(response.isSuccess()){
+                        String token = response.headers().get("auth-token");
+                        AppController.getInstance().getLoginManager().clear();
+                        AppController.getInstance().getLocalStore().setLoginToken(token);
+                        moveToMainActivity();
+                    }
+                }
 
-                                @Override
-                                public void onFailure() {
+                @Override
+                public void onFailure(Call<DefaultResponse> call, Throwable t) {
 
-                                }
-                            });
-
-                        }
-
-                        @Override
-                        public void onFailure() {
-                            registerByFacebook(loginResult);
-                        }
-                    });
+                }
+            });
         }
 
         @Override

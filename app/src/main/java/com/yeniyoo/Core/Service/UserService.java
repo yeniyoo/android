@@ -1,7 +1,7 @@
 package com.yeniyoo.Core.Service;
 
 import com.yeniyoo.Core.network.DefaultListener;
-import com.yeniyoo.Model.LoginToken;
+import com.yeniyoo.Core.network.DefaultResponse;
 import com.yeniyoo.Model.User;
 
 import retrofit2.Call;
@@ -14,18 +14,14 @@ import retrofit2.http.POST;
  * Created by YongJae on 2016-02-10.
  */
 public interface UserService {
-    @GET("/user/me/")
+    @GET("/api/users/")
     Call<User> getUser();
 
     @FormUrlEncoded
-    @POST("/users/facebook-auth/")
-    Call<Boolean> register(@Field("access_token") String token);
+    @POST("/api/users/facebook-auth/")
+    Call<DefaultResponse> register(@Field("access_token") String token);
 
     @FormUrlEncoded
-    @POST("/user/login/")
-    Call<LoginToken> login(@Field("facebook_id") String id);
-
-    @FormUrlEncoded
-    @POST("/users")
+    @POST("/api/users")
     Call<DefaultListener> postAge(@Field("age") Integer age);
 }

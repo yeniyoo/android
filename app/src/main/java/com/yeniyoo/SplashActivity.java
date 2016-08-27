@@ -29,7 +29,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_flash);
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.gelato.gelato",
+                    "com.yeniyoo",
                     PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");

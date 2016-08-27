@@ -10,7 +10,25 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User implements Serializable {
 
+    public String fbId;
+    public Boolean gender;
     public Integer age;
+
+    public Boolean getGender() {
+        return gender;
+    }
+
+    public void setFbId(String fbId) {
+        this.fbId = fbId;
+    }
+
+    public String getFbId() {
+        return fbId;
+    }
+
+    public void setGender(Boolean gender) {
+        this.gender = gender;
+    }
 
     public Integer getAge() {
         return age;

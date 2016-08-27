@@ -1,9 +1,6 @@
 package com.yeniyoo.Core;
 
-import android.content.SharedPreferences;
-
 import com.yeniyoo.Core.network.DefaultListener;
-import com.yeniyoo.Model.LoginToken;
 import com.yeniyoo.Model.User;
 
 import java.util.concurrent.Semaphore;
@@ -145,26 +142,6 @@ public class LoginManager {
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 listener.onFailure();
-            }
-        });
-    }
-
-    public void performFacebookLogin(String id, final DefaultListener defaultListener) {
-        AppController.getInstance().getRestService().getUserService().login(id).enqueue(new Callback<LoginToken>() {
-            @Override
-            public void onResponse(Call<LoginToken> call, Response<LoginToken> response) {
-                if(response.isSuccess()){
-                    setLoginToken(response.body().getToken());
-                    defaultListener.onSuccess();
-                }
-                else{
-                    defaultListener.onFailure();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<LoginToken> call, Throwable t) {
-                defaultListener.onFailure();
             }
         });
     }

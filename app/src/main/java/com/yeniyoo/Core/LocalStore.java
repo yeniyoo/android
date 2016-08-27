@@ -99,7 +99,7 @@ public class LocalStore {
     }
 
     public String getBaseUrl(){
-        return sharedPref.getString("base_url","http://f8d9cee0.ngrok.io/api");
+        return sharedPref.getString("base_url","http://222.110.46.5:8081");
     }
 
     public void clearLoginData(){
